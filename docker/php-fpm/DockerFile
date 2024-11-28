@@ -1,0 +1,21 @@
+FROM php:8.1-fpm
+
+# 必要なパッケージをインストール
+RUN apt-get update && apt-get install -y \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd
+
+# 作業ディレクトリを設定
+WORKDIR /var/www/html
+
+# アプリケーションコードをコンテナにコピー
+COPY . .
+
+# ポートを公開
+EXPOSE 9000
+
+# PHP-FPMを起動
+CMD ["php-fpm"]
